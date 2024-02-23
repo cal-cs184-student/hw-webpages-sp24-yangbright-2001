@@ -1,7 +1,182 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 1 index.html here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184/284A Rasterizer</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184/284A: Computer Graphics and Imaging, Spring 2024</h1>
+<h1 align="middle">Homework 1: Rasterizer</h1>
+<h2 align="middle">Liang Yang</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>In this assignment, we implemented a simple rasterizer, including features like drawing triangles, supersampling, hierarchical transforms, and texture mapping with antialiasing. At the end, you'll have a functional vector graphics renderer that can take in a simplified version of SVG (Scalable Vector Graphics) files, which are widely used on the internet.</p>
+
+<h2 align="middle">Section I: Rasterization</h2>
+
+<h3 align="middle">Part 1: Rasterizing single-color triangles</h3>
+
+<p>Triangles are rasterized starting from the sampling process. The rasterization process is done by iterating through every pixel, within each pixel, 
+  we pick its center point as the representative and check if the center point is inside the triangle. The check for whether a point is inside the triangle is accomplished through 3 line tests.
+  Each line test checks whether the pixel center point is inside the edge or not. If the pixel center point passes all 3 line tests, the pixel will be colored, else it won't be colored.</p>
+
+<p>In order to speed up the algorithm and avoid unnecessary checks for pixel, we determined both the upper and lower bound for the x, y coordinates, which is the largest elemens of all the vertices, 
+  hence forming a rectangular bound for the triangles. We simply need to iterate all pixels within this rectangular bound and do the line tests on them, which speeds up the algorithm.
+
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/image5.png" align="middle" width="400px"/>
+        <figcaption align="middle">/svg/basic/test4.svg.</figcaption>
+      </td>
+      <td>
+        <img src="images/image6.png" align="middle" width="400px"/>
+        <figcaption align="middle">/svg/basic/test3.svg</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/image7.png" align="middle" width="400px"/>
+        <figcaption align="middle">/svg/basic/test5.svg</figcaption>
+      </td>
+      <td>
+        <img src="images/image4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Hi!</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- <p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/image1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Caption goes here.</figcaption>
+      </td>
+      <td>
+        <img src="images/image2.png" align="middle" width="400px"/>
+        <figcaption align="middle">Caption goes here.</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/image3.png" align="middle" width="400px"/>
+        <figcaption align="middle">Caption goes here.</figcaption>
+      </td>
+      <td>
+        <img src="images/image4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Caption goes here.</figcaption>
+      </td>
+    </tr>
+  </table>
+</div> -->
+
+
+<!-- <h3 align="middle">Part 2: Antialiasing triangles</h3> -->
+
+
+
+<h3 align="middle">Part 3: Transforms</h3>
+
+<p> We implement the three transforms in the transforms.cpp file, the 3 transforms are translation, scale and rotation. 
+  The transforms should be operated in homogeneous coordinates.In this problem, we need to construct the transformation matrices within each transform operation. </p>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/my_robot.png" align="middle" width="400px"/>
+          <figcaption align="middle">svg/transforms/robot.svg</figcaption>
+        </td>
+        
+      </tr>
+      
+    </table>
+  </div> 
+
+
+<h2 align="middle">Section II: Sampling</h2>
+
+<h3 align="middle">Part 4: Barycentric coordinates</h3>
+
+
+<p> Implement RasterizerImp::rasterize_interpolated_color_triangle(...) to draw a triangle with colors defined at the vertices and interpolated across the triangle area using barycentric interpolation.
+  We calculated the barycentric coordinates of color for each pixel. The formula is shown as below.
+  <div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/image9.jpeg" align="middle" width="400px"/>
+        <figcaption align="middle">barycentric coordinate formulas</figcaption>
+      </td>
+      
+    </tr>
+    
+  </table>
+</div> -->
+
+<p> First, we reuse the codes we did in task 1 to do rasterization for triangles. The modification should be done when coloring the pixels which are in the triangle.
+  If the pixel passes the line tests, we need to use the formula in the above figure to calculate the barycetric coordinate of the color attribute. 
+  Since the arithmetic operation for the Color class has been overloaded, we can use the weighted sum of the barycentric coordinates and the color at the vertices of each edge.
+  The rendering result for test 7 is as below </p>
+
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/image8.png" align="middle" width="400px"/>
+          <figcaption align="middle">svg/basic/test7.svg</figcaption>
+        </td>
+        
+      </tr>
+      
+    </table>
+  </div> 
+
+
+<!-- <h3 align="middle">Part 5: "Pixel sampling" for texture mapping</h3>
+
+
+<h3 align="middle">Part 6: "Level sampling" with mipmaps for texture mapping</h3>
+
+
+
+<h2 align="middle">Section III: Art Competition</h2>
+<p>If you are not participating in the optional art competition, don't worry about this section!</p>
+
+<h3 align="middle">Part 7: Draw something interesting!</h3> -->
+
+<!-- <h1 align="middle">End of report</h1> -->
+
+</body>
 </html>
